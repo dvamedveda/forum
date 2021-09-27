@@ -31,9 +31,9 @@ public class IndexController {
     @GetMapping({"/", "/index"})
     public String index(@RequestParam(name = "notfound", required = false) String notFound, Model model) {
         model.addAttribute("posts", postService.getPosts());
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!authentication.getName().equals("anonymousUser")) {
-            model.addAttribute("user", User.of(authentication.getName()));
+        String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!currentUserName.equals("anonymousUser")) {
+            model.addAttribute("user", User.of(currentUserName));
         }
         if (notFound != null) {
             model.addAttribute("message", "Указанная тема не найдена");

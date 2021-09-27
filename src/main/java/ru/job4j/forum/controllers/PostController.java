@@ -47,8 +47,8 @@ public class PostController {
      */
     @GetMapping("/edit")
     public String updatePost(@RequestParam("id") int id, Model model) {
-        if (postService.getPostById(id) != null) {
-            Post post = this.postService.getPostById(id);
+        Post post = this.postService.getPostById(id);
+        if (post != null) {
             model.addAttribute("post", post);
             return "posts/edit";
         }
@@ -76,8 +76,9 @@ public class PostController {
      */
     @GetMapping("/view")
     public String goToPost(@RequestParam("id") int id, Model model) {
-        if (postService.getPostById(id) != null) {
-            model.addAttribute("post", postService.getPostById(id));
+        Post post = postService.getPostById(id);
+        if (post != null) {
+            model.addAttribute("post", post);
             model.addAttribute("comments", commentService.getCommentsToPost(id));
             model.addAttribute("user", User.of(SecurityContextHolder.getContext().getAuthentication().getName()));
             return "posts/view";
