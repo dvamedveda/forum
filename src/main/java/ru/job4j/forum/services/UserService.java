@@ -1,9 +1,10 @@
 package ru.job4j.forum.services;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Service;
 import ru.job4j.forum.models.User;
+import ru.job4j.forum.repositories.AuthorityDataRepository;
+import ru.job4j.forum.repositories.UserDataRepository;
 
 /**
  * Сервис для работы с пользователями.
@@ -11,12 +12,26 @@ import ru.job4j.forum.models.User;
 @Service
 public class UserService {
 
-    private final InMemoryUserDetailsManager userManager;
+    /**
+     * Хранилище пользователей.
+     */
+    private final UserDataRepository userDataRepository;
+
+    /**
+     * Хранилище ролей.
+     */
+    private final AuthorityDataRepository authorityDataRepository;
+
+    /**
+     * Кодировщик паролей.
+     */
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(InMemoryUserDetailsManager inMemoryUserDetailsManager,
+    public UserService(UserDataRepository userDataRepository,
+                       AuthorityDataRepository authorityDataRepository,
                        PasswordEncoder passwordEncoder) {
-        this.userManager = inMemoryUserDetailsManager;
+        this.userDataRepository = userDataRepository;
+        this.authorityDataRepository = authorityDataRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -27,17 +42,14 @@ public class UserService {
      */
     public boolean createNewUser(User user) {
         boolean result = false;
-        if (!this.userManager.userExists(user.getLogin())) {
-            this.userManager.createUser(
-                    org.springframework.security.core.userdetails.User
-                            .withUsername(user.getLogin())
-                            .password(passwordEncoder.encode(user.getPassword()))
-                            .roles("USER")
-                            .build()
-            );
+        if (!this.userDataRepository.findByLogin(user.getLogin()).isPresent()) {
+            String encodedPass = passwordEncoder.encode(user.getPassword());
+            user.setPassword(encodedPass);
+            user.setEnabled(true);
+            user.setAuthority(this.authorityDataRepository.findAuthorityByAuthority("ROLE_USER").get());
+            this.userDataRepository.save(user);
             result = true;
         }
-
         return result;
     }
 }

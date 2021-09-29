@@ -1,42 +1,56 @@
 package ru.job4j.forum.models;
 
 
+import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
 
 /**
  * Модель данных для поста на форум.
  */
+@Entity
+@Table(name = "forum_posts")
 public class Post {
 
     /**
      * Идентификатор постав.
      */
-    private int id = 0;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
     /**
      * Тема поста.
      */
+    @Column(name = "post_name")
     private String name;
 
     /**
      * Содержимое поста.
      */
+    @Column(name = "post_desc")
     private String desc;
 
     /**
      * Дата создания поста.
      */
+    @Temporal(value = TemporalType.TIMESTAMP)
     private Date created;
 
     /**
      * Пользователь, создавший пост на форуме.
      */
+    @ManyToOne
+    @JoinColumn(name = "forum_user_id")
     private User user;
 
-    public static Post of(String name, User user) {
+    public Post() {
+    }
+
+    public static Post of(String name, String desc, User user) {
         Post post = new Post();
         post.name = name;
+        post.desc = desc;
         post.user = user;
         post.created = new Date(System.currentTimeMillis());
         return post;

@@ -31,7 +31,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <input type="text" name="name" value="${requestScope['post'].name}" style="min-width: 100%">
+                            <input type="text" name="name" value="${requestScope['post'].name}" style="min-width: 100%" required>
                         </td>
                     </tr>
                     <tr>
@@ -41,7 +41,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <textarea name="desc" rows="4" style="min-width: 100%">${requestScope['post'].desc}</textarea>
+                            <textarea name="desc" rows="4" style="min-width: 100%" required>${requestScope['post'].desc}</textarea>
                         </td>
                     </tr>
                     <tr>

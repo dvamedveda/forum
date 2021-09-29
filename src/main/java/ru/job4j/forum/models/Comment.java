@@ -1,34 +1,60 @@
 package ru.job4j.forum.models;
 
+import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
 
 /**
  * Модель данных для комментария.
  */
+@Entity
+@Table(name = "forum_comments")
 public class Comment {
+
+    /**
+     * Идентификатор комментария.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
     /**
      * Текст комментария.
      */
+    @Column(name = "comment_text")
     private String text;
 
     /**
      * Время создания комментария.
      */
+    @Temporal(value = TemporalType.TIMESTAMP)
+    @Column(name = "commented")
     private Date commented;
 
     /**
      * Пользователь, оставивший комментарий.
      */
+    @ManyToOne
+    @JoinColumn(name = "forum_user_id")
     private User user;
 
-    public static Comment of(String text, User user) {
+    /**
+     * Пост, к которому принадлежит комментарий.
+     */
+    @ManyToOne
+    @JoinColumn(name = "forum_post_id")
+    private Post post;
+
+    public static Comment of(String text, User user, Post post) {
         Comment comment = new Comment();
         comment.text = text;
         comment.user = user;
         comment.commented = new Date(System.currentTimeMillis());
+        comment.post = post;
         return comment;
+    }
+
+    public Comment() {
     }
 
     public String getText() {
@@ -53,6 +79,22 @@ public class Comment {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
     }
 
     @Override

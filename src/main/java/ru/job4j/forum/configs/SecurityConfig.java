@@ -1,17 +1,17 @@
 package ru.job4j.forum.configs;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+
+import javax.sql.DataSource;
 
 /**
  * Конфигурация SpringSecurity.
@@ -25,6 +25,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    /**
+     * Источник данных.
+     */
+    private DataSource dataSource;
+
+    public SecurityConfig(@Qualifier("mainDataSource") DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     /**
      * Получение кодировщика паролей.
@@ -44,19 +53,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(inMemoryUserDetailsManager()).passwordEncoder(this.passwordEncoder);
+        auth.jdbcAuthentication().dataSource(dataSource)
+                .passwordEncoder(this.passwordEncoder)
+                .usersByUsernameQuery(
+                        "select login, password, enabled "
+                                + "from forum_users "
+                                + "where login = ?")
+                .authoritiesByUsernameQuery(
+                        "select u.login, a.authority "
+                                + "from forum_users u join authorities a on u.authority_id = a.id "
+                                + "where u.login = ?"
+                );
     }
 
-    /**
-     * Получение менеджера данных пользователей, хранящего информацию в памяти.
-     *
-     * @return объект менеджера данных пользователей.
-     */
-    @Bean
-    public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
-        UserDetails defaultUser = User.withUsername("user").password(passwordEncoder.encode("secret")).roles("USER").build();
-        return new InMemoryUserDetailsManager(defaultUser);
-    }
 
     /**
      * Конфигурация авторизации в приложении.

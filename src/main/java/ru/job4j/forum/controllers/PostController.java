@@ -19,7 +19,14 @@ import ru.job4j.forum.services.PostService;
 @Controller
 public class PostController {
 
+    /**
+     * Сервис для работы с постами.
+     */
     private final PostService postService;
+
+    /**
+     * Сервис для работы с комментами.
+     */
     private final CommentService commentService;
 
     public PostController(PostService postService, CommentService commentService) {
@@ -95,7 +102,7 @@ public class PostController {
      * @return редирект на откомментированный пост.
      */
     @PostMapping("/comment")
-    public String leaveComment(@RequestParam("id") int id, @ModelAttribute Comment comment, Model model) {
+    public String leaveComment(@RequestParam("postId") int id, @ModelAttribute Comment comment, Model model) {
         commentService.addCommentToPostById(id, comment);
         model.addAttribute("user", User.of(SecurityContextHolder.getContext().getAuthentication().getName()));
         return "redirect:/view?id=" + id;

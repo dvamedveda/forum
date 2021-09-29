@@ -68,7 +68,7 @@
         </c:forEach>
     </table>
     <div class="width-auto">
-        <form method="post" action="/comment?id=${requestScope['post'].id}">
+        <form method="post" action="/comment?postId=${requestScope['post'].id}">
             <table style="min-width: 100%">
                 <tr>
                    <h4>
@@ -82,7 +82,6 @@
                 </tr>
                 <tr>
                     <td>
-                        <input type="text" hidden name="user" value="${requestScope['user'].login}">
                         <input type="submit" name="submit" value="Оставить комментарий">
                     </td>
                 </tr>

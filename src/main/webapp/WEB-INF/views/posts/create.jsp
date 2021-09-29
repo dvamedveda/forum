@@ -31,7 +31,7 @@
             </tr>
             <tr>
                 <td>
-                    <input type="text" name="name" style="min-width: 100%">
+                    <input type="text" name="name" style="min-width: 100%" required>
                 </td>
             </tr>
             <tr>
@@ -41,7 +41,7 @@
             </tr>
             <tr>
                 <td>
-                    <textarea name="desc" placeholder="Введите содержимое темы" rows="4" style="min-width: 100%"></textarea>
+                    <textarea name="desc" placeholder="Введите содержимое темы" rows="4" style="min-width: 100%" required></textarea>
                 </td>
             </tr>
             <tr>

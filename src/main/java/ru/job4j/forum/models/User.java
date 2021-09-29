@@ -1,36 +1,46 @@
 package ru.job4j.forum.models;
 
+import javax.persistence.*;
 import java.util.Objects;
 
 /**
  * Модель данных для пользователя приложения.
  */
+@Entity
+@Table(name = "forum_users")
 public class User {
 
     /**
      * Идентификатор пользователя.
      */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     /**
      * Имя пользователя.
      */
+    @Column
     private String login;
 
     /**
      * Пароль пользователя.
      */
+    @Column
     private String password;
 
     /**
      * Отметка об активности пользователя.
      */
+    @Column
     private boolean enabled;
 
     /**
      * Роль пользователя.
      */
-    private String authority;
+    @ManyToOne
+    @JoinColumn(name = "authority_id")
+    private Authority authority;
 
     public static User of(String name) {
         User user = new User();
@@ -70,11 +80,11 @@ public class User {
         this.enabled = enabled;
     }
 
-    public String getAuthority() {
+    public Authority getAuthority() {
         return authority;
     }
 
-    public void setAuthority(String authority) {
+    public void setAuthority(Authority authority) {
         this.authority = authority;
     }
 
