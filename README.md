@@ -1,4 +1,5 @@
 [![Build Status](https://app.travis-ci.com/dvamedveda/forum.svg?branch=master)](https://app.travis-ci.com/dvamedveda/forum)
+[![codecov](https://codecov.io/gh/dvamedveda/forum/branch/master/graph/badge.svg?token=ICNBF3INPL)](https://codecov.io/gh/dvamedveda/forum)
 
 # Simple forum app (using Spring Boot)
 
