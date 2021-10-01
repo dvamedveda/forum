@@ -45,6 +45,6 @@ public class RegistrationController {
         } else {
             model.addAttribute("message", "Регистрация завершена. Вы можете зайти используя введенные данные");
         }
-        return "/login";
+        return "login";
     }
 }

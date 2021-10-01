@@ -1,12 +1,15 @@
 package ru.job4j.forum.controllers;
 
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.job4j.forum.models.Comment;
 import ru.job4j.forum.models.Post;
@@ -17,7 +20,8 @@ import ru.job4j.forum.services.PostService;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.hamcrest.core.Is.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -25,6 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 public class PostControllerTest {
 
     @Autowired
@@ -118,5 +123,47 @@ public class PostControllerTest {
                 .andExpect(model().attribute("comments", mockComments))
                 .andExpect(model().attributeExists("user"))
                 .andExpect(view().name("posts/view"));
+    }
+
+    /**
+     * Проверка сохранения поста.
+     *
+     * @throws Exception исключения при работе контроллера.
+     */
+    @Test
+    @WithMockUser
+    public void whenSavePostThenSuccess() throws Exception {
+        String postName = "test post name";
+        String postDesc = "test post desc";
+        this.mvc.perform(post("/save")
+                .param("name", postName)
+                .param("desc", postDesc))
+                .andExpect(redirectedUrl("/"));
+        ArgumentCaptor<Post> postCaptor = ArgumentCaptor.forClass(Post.class);
+        Mockito.verify(this.postService).savePost(postCaptor.capture());
+        Post savedPost = postCaptor.getValue();
+        Assert.assertThat(savedPost.getName(), is(postName));
+        Assert.assertThat(savedPost.getDesc(), is(postDesc));
+    }
+
+    /**
+     * Проверка сохранения комментария для поста.
+     *
+     * @throws Exception исключения при работе контроллера.
+     */
+    @Test
+    @WithMockUser
+    public void whenLeaveCommentThenSuccess() throws Exception {
+        int postId = 1;
+        String commentText = "test comment text";
+        this.mvc.perform(post("/comment")
+                .param("postId", String.valueOf(postId))
+                .param("text", commentText))
+                .andExpect(redirectedUrl("/view?id=" + String.valueOf(postId)));
+        ArgumentCaptor<Integer> postIdCaptor = ArgumentCaptor.forClass(Integer.class);
+        ArgumentCaptor<Comment> commentCaptor = ArgumentCaptor.forClass(Comment.class);
+        Mockito.verify(this.commentService).addCommentToPostById(postIdCaptor.capture(), commentCaptor.capture());
+        Assert.assertThat(postIdCaptor.getValue(), is(postId));
+        Assert.assertThat(commentCaptor.getValue().getText(), is(commentText));
     }
 }
