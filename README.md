@@ -5,6 +5,7 @@
 
 ### Application features:
 This Java web application just realizing simple forum with core mechanics:
+- checking/updating its database with liquibase;
 - create\edit post;
 - view\comment post;
 - additional info for posts/comments;
@@ -24,8 +25,7 @@ This application uses Spring framework(s).
 ### Usage:
 - create postgresql db named 'forum' at localhost:5432, with postgres/postgres credentials;
 - git clone project;
-- execute src/main/db/migration/create_schema.sql script on 'forum' database
-- mvn clean package;
+- mvn clean package spring-boot:run;
 - http://localhost:8080/
 - default user is 'user' with password 'secret'
 
@@ -44,4 +44,4 @@ This application uses Spring framework(s).
 ### Used frameworks, libs, technologies:
 - Core: Java, Maven, Spring Data, Spring Security, Spring MVC, Spring Boot
 - UI: Bootstrap, JSP, JSTL
-- Side: Postgresql, Tomcat
+- Side: Postgresql, Liquibase, Tomcat, Spring MockMVC, SpringBootTest

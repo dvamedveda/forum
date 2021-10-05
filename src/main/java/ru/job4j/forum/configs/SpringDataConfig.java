@@ -52,20 +52,16 @@ public class SpringDataConfig {
     /**
      * Фабрика объектов EntityManager.
      *
-     * @param dialect    диалект бд.
      * @param dataSource источник данных.
      * @return объект фабрики.
      */
     @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory(@Value("${hibernate.dialect}") String dialect, DataSource dataSource) {
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(@Qualifier("mainDataSource") DataSource dataSource) {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         LocalContainerEntityManagerFactoryBean entityFactory = new LocalContainerEntityManagerFactoryBean();
         entityFactory.setJpaVendorAdapter(vendorAdapter);
         entityFactory.setPackagesToScan("ru.job4j.forum");
         entityFactory.setDataSource(dataSource);
-        Properties properties = new Properties();
-        properties.setProperty("hibernate.dialect", dialect);
-        entityFactory.setJpaProperties(properties);
         return entityFactory;
     }
 
