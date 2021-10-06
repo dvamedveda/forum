@@ -3,17 +3,21 @@ language: java
 sudo: false
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+- bash <(curl -s https://codecov.io/bash)
 
 notifications:
   email:
     recipients:
-      - justmustdie@yandex.ru
-    on_success: never # default: change
-    on_failure: always # default: always
+    - justmustdie@yandex.ru
+    on_success: never
+    on_failure: always
 
-services:
-  - postgresql
+install: true
 
-before_install:
-  - psql -c 'create database forum;' -U postgres
+script: mvn clean package
+
+deploy:
+  provider: heroku
+  app: warm-garden-05012
+  api_key:
+    secure: EL4RvX3V4MlRJKcpbmlbYVULBPtLJk6ys6417pE/5WzzXuv1tb5KaGrW/IMZZMZ9Y5jFOXVu3v4WmIkDny45kIf7qeeSkOS5VYnWPecpGCGoVuuRHlVih/2zA7QEHwmfqfw95tyrsvgK4o1JhKQDGP2aL3r6sTsVVc12OS0GlhDtOwp0d0KMmlJuAbSJbIr6Uh3cuRrQ+LE5MQ6q1QDa3wUS4+eNog7iSjWKlHA6lJQW5Sy47mqJ2HBhuVCQ2wyYnY3T4G8ifd2nwz9MEtgk7TgPtYBv7w5lnlWetipF82dXJ/JdseOhyOqJx4s+gylX767pAl/1YA9E1I7u7KQoaVwhSCed1MKjhWIL+XsoMZcWxp7Kq5+WQh3+bZlGro6rVpf1vSWc2EcafTmjQQUXviFtAiaUjFN5iENx9oAcsGrISEg6O6j0pNq3TBBfTrPXCXbEoSdu9BEDP+nM6Ywm9aCRH12piM73q5Zivli1oI+gB/3PzWUaCtfm9ylhJY0Yl99ap2NCnTrmUdB183AAYHuGU33l78xkGI27Um2eUfFe7jjTCSFm9bGmsgOgX1sUbEXkZrXR+oglg2KXLX3p+IkQwAg0R6AyMleJE3zPBWGhNzBnO/h9G3XSW2d/qcf5Djj3Sds85NGIdFmqgiDlfTlfoPxAwDyIsz1MzzDrLCk=

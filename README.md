@@ -21,13 +21,17 @@ This application developed with layered architecture:
 - view-layer
 
 This application uses Spring framework(s).
+Application also deployed on Heroku.
 
 ### Usage:
 - create postgresql db named 'forum' at localhost:5432, with postgres/postgres credentials;
 - git clone project;
 - mvn clean package spring-boot:run;
-- http://localhost:8080/
+- visit http://localhost:8080/
+##### OR
+- visit https://warm-garden-05012.herokuapp.com/
 - default user is 'user' with password 'secret'
+- use forum
 
 ### Application screenshots:
 - you can view main page with all posts anonymously, but view/comment/create post needs for auth
